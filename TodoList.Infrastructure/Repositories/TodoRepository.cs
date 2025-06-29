@@ -55,21 +55,20 @@ namespace TodoList.Infrastructure.Repositories
 
         public async Task<PaginationResponse<TodoItem>> GetPagedAsync(PaginationRequest pagination)
         {
-            // 1. إنشاء query الأساسية
+           
             var query = _context.TodoItems.AsQueryable();
 
-            // 2. حساب العدد الكلي (قبل التصفية والترتيب)
             var totalCount = await query.CountAsync();
 
-            // 3. تطبيق Pagination
+         
             var items = await query
-                .OrderBy(x => x.Id) // الترتيب الافتراضي
+                .OrderBy(x => x.Id)
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
-                .AsNoTracking() // لتحسين الأداء إذا لم نكن نحتاج لتتبع التغييرات
+                .AsNoTracking() 
                 .ToListAsync();
 
-            // 4. إعادة النتيجة
+          
             return new PaginationResponse<TodoItem>
             {
                 TotalCount = totalCount,
@@ -168,8 +167,7 @@ namespace TodoList.Infrastructure.Repositories
             return new PaginationResponse<TodoItem>(totalCount, pagination.PageSize, pagination.PageNumber, items);
         }
 
-
-
+      
     }
 
 }

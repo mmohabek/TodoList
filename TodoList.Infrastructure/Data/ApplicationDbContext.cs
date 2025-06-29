@@ -43,7 +43,10 @@ namespace TodoList.Infrastructure.Data
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
-                .IsUnique();
+                .IsUnique()
+                .HasFilter("[Username] IS NOT NULL");
+
+
 
         }
 

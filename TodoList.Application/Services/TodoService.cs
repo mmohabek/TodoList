@@ -38,28 +38,28 @@ namespace TodoList.Application.Services
         }
 
 
-
         public async Task<TodoItemDto> CreateAsync(CreateTodoItemDto createTodoItemDto)
         {
-            // التحقق من الصحة
             var validationResult = await _validator.ValidateAsync(createTodoItemDto);
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
 
-            var todoItem = new TodoItem();
-            _mapper.Map(createTodoItemDto, todoItem); // استخدام Map مع كائن موجود
-
+            var todoItem = _mapper.Map<TodoItem>(createTodoItemDto);
             await _todoRepository.AddAsync(todoItem);
 
-            return _mapper.Map<TodoItemDto>(todoItem); // Map إلى نوع جديد
+            return _mapper.Map<TodoItemDto>(todoItem);
         }
-
 
         public async Task<TodoItemDto> GetByIdAsync(int id)
         {
+
             var item = await _todoRepository.GetByIdAsync(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException($"Todo item with id {id} not found");
+            }
             return _mapper.Map<TodoItemDto>(item);
         }
 
@@ -117,8 +117,8 @@ namespace TodoList.Application.Services
 
 
         public async Task<PaginationResponse<TodoItemDto>> GetByPriorityAsync(
-    PaginationRequest pagination,
-    PriorityLevel priority)
+            PaginationRequest pagination,
+            PriorityLevel priority)
         {
             var result = await _todoRepository.GetByPriorityAsync(pagination, priority);
             return new PaginationResponse<TodoItemDto>

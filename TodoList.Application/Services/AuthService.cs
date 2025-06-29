@@ -91,6 +91,8 @@ namespace TodoList.Application.Services
             {
                 Email = dto.Email,
                 Role = dto.Role,
+                PasswordHash = string.Empty,
+                Username = $"temp_{Guid.NewGuid().ToString()[..8]}",
                 InvitationToken = token,
                 InvitationExpiry = expiry
             };
@@ -110,18 +112,26 @@ namespace TodoList.Application.Services
             if (user == null || user.InvitationExpiry < DateTime.UtcNow)
                 throw new Exception("Invalid or expired invitation token");
 
+            var usernameExists = await _userRepo.GetByUsernameAsync(dto.Username);
+            if (usernameExists != null && usernameExists.Id != user.Id)
+                throw new Exception("Username already taken");
+
+            user.Username = dto.Username;
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             user.InvitationToken = null;
             user.InvitationExpiry = null;
+
 
             await _userRepo.UpdateAsync(user);
 
             return new UserResponseDto
             {
                 Id = user.Id,
+                Username = user.Username,
                 Email = user.Email,
                 Role = user.Role,
-                Token = GenerateJwtToken(user)
+                Token = GenerateJwtToken(user),
+
             };
         }
 
