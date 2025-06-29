@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  todoapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=tododb;Database=TodoListDb;User=sa;Password=YourStrong@Passw0rd;
+      - Jwt__Key=YourSuperSecretKeyHereAtLeast32CharactersLong
+    depends_on:
+      - tododb
+
+  tododb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: YourStrong@Passw0rd
+      ACCEPT_EULA: Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - tododb_data:/var/opt/mssql
+
+volumes:
+  tododb_data:

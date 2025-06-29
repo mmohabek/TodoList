@@ -12,6 +12,8 @@
 
 	  <InvariantGlobalization>false</InvariantGlobalization>
   <PublishReadyToRun>false</PublishReadyToRun>
+  <UserSecretsId>5d3261e1-cd69-4323-99ae-13b1a5c3335c</UserSecretsId>
+  <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
 
   </PropertyGroup>
 
@@ -33,6 +35,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
 
 
 
